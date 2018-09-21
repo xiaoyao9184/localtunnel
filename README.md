@@ -98,3 +98,31 @@ See [localtunnel/server](//github.com/localtunnel/server) for details on the ser
 
 ## License ##
 MIT
+
+
+## Principle ##
+
+
+### Chain
+
+Two stream pipeline make up circular linked list.
+Up Chain data from remote to local, Down Chain data from local to remote.
+
+
+            Remote Socket               Customize Transformers                  Local Socket
+
+    Up          Head                        Nodes (or empty)                        Tail        
+        +------------------+      +----------+       +----------+             +------------------+
+        |                  |      | Readable |---+   | Readable |---  ...  -->|                  |
+        |                  |      +----------|   |   +----------|             |                  |
+        | Readable Streams |----->| Writable |   +-->| Writable |             | Writable Streams |
+        |                  |      +----------+       +----------+             |                  |
+        |                  |                                                  |                  |
+    ├───|------------------|──────────────────────────────────────────────────|------------------|───┤
+        |                  |                                                  |                  |
+        |                  |             +----------+       +----------+      |                  |
+        | Writable Streams |<--  ...  ---| Readable |   +---| Readable |      | Readable Streams |
+        |                  |             +----------+   |   +----------+      |                  |
+        |                  |             | Writable |<--+   | Writable |<-----|                  |
+        +------------------+             +----------+       +----------+      +------------------+
+    Down        Tail                        Nodes (or empty)                        Head
